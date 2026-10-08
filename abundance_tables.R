@@ -45,12 +45,19 @@ taxonomy <- read.table("fastq/final.opti_mcc.0.03.cons.taxonomy", header = TRUE,
 tax_levels <- c("kingdom", "phylum", "class", "order", "family", "genus")
 
 tables <- f(otu_data, taxonomy)
+sample_info <- read.csv("sample_info.csv")
+
+tables2 <- lapply(tables, function(x) {
+    x <- as.data.frame(x) %>% cf()
+    print(head(x))
+    x <- x[, match(sample_info$sample, colnames(x))]
+    return(x)
+})
 
 dir.create("abundance_tables")
 
-for (i in 2:length(tables)) {
-    temp <- tables[[i]]
+for (i in 2:length(tables2)) {
+    temp <- tables2[[i]]
     name <- paste0("abundance_tables/", tax_levels[i], "_abundance.csv")
     write.csv(temp, name)
 }
-

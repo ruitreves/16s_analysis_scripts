@@ -9,10 +9,15 @@ colnames(otu_data) <- otu_data[2, ]
 otu_data <- otu_data[-c(1:3), ]
 otu_data <- as.data.frame(otu_data)
 
+sample_info <- read.csv("sample_info.csv")
+
+otu_data <- otu_data[, match(sample_info$sample, colnames(otu_data))]
+
 taxonomy <- cf(taxonomy)
 
 otu_table <- merge(otu_data, taxonomy, by = 0)
 otu_table <- cf(otu_table)
 
-write.csv(otu_table, "otu_table.csv")
+dir.create("results")
 
+write.csv(otu_table, "results/otu_table.csv")
